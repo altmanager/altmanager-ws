@@ -1,0 +1,17 @@
+{
+  "version": "0.0.0-snapshot",
+  "license": "GPL-3.0-only",
+  "tasks": {
+    "start": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys src/main.ts"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "lib": [
+      "deno.window"
+    ]
+  },
+  "imports": {
+    "@altmanager/lib": "jsr:@altmanager/lib@^0.1.0",
+    "prismarine-auth": "npm:prismarine-auth@^2.7.0"
+  }
+}
