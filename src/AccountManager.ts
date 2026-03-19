@@ -1,11 +1,10 @@
-import { Authflow, Titles } from "prismarine-auth";
 import { Account } from "./Account.ts";
 import { OfflineAccount } from "./OfflineAccount.ts";
-import type { Session } from "@altmanager/lib";
+import type { DeviceCodeInfo } from "./Auth.ts";
+import { Auth } from "./Auth.ts";
 
 export class AccountManager {
   private static readonly ACCOUNTS_PATH = ".data/accounts.json";
-  private static readonly AUTH_CACHE_DIR = ".data/auth-cache/";
 
   readonly #accounts = new Map<string, OfflineAccount>();
 
@@ -24,7 +23,8 @@ export class AccountManager {
         uuid: string;
         username: string;
         skinUrl: string;
-        cacheId: string;
+        refreshToken: string;
+        lastServer: string | null;
       }> = JSON.parse(text);
       for (const entry of raw) {
         this.#accounts.set(
@@ -33,7 +33,8 @@ export class AccountManager {
             entry.uuid,
             entry.username,
             entry.skinUrl,
-            entry.cacheId,
+            entry.refreshToken,
+            entry.lastServer ?? null,
           ),
         );
       }
@@ -43,32 +44,17 @@ export class AccountManager {
   }
 
   public async addAccount(
-    onDeviceCode: (verificationUri: string, userCode: string) => void,
+    onDeviceCode: (info: DeviceCodeInfo) => void,
   ): Promise<Account> {
-    const cacheId = crypto.randomUUID();
-
-    const flow = new Authflow(cacheId, AccountManager.AUTH_CACHE_DIR, {
-      authTitle: Titles.MinecraftJava,
-      flow: "live",
-      deviceType: "Win32",
-    }, (code) => {
-      onDeviceCode(code.verification_uri, code.user_code);
-    });
-
-    const result = await flow.getMinecraftJavaToken({ fetchProfile: true });
-    const profile = result.profile!;
-    const session: Session = {
-      token: result.token,
-      uuid: profile.id,
-      username: profile.name,
-    };
+    const result = await Auth.authenticate(onDeviceCode);
 
     const account = new Account(
-      profile.id,
-      profile.name,
-      profile.skins[0].url,
-      cacheId,
-      session,
+      result.session.uuid,
+      result.session.username,
+      result.skinUrl,
+      result.refreshToken,
+      result.session,
+      null
     );
 
     this.#accounts.set(account.uuid, account);
@@ -82,30 +68,15 @@ export class AccountManager {
     }
 
     try {
-      const flow = new Authflow(
-        offlineAccount.cacheId,
-        AccountManager.AUTH_CACHE_DIR,
-        {
-          authTitle: Titles.MinecraftJava,
-          flow: "live",
-          deviceType: "Win32",
-        },
-      );
-
-      const result = await flow.getMinecraftJavaToken({ fetchProfile: true });
-      const profile = result.profile!;
-      const session: Session = {
-        token: result.token,
-        uuid: profile.id,
-        username: profile.name,
-      };
+      const result = await Auth.refresh(offlineAccount.refreshToken);
 
       const account = new Account(
         offlineAccount.uuid,
         offlineAccount.username,
         offlineAccount.skinUrl,
-        offlineAccount.cacheId,
-        session,
+        result.refreshToken,
+        result.session,
+        offlineAccount.lastServer
       );
 
       this.#accounts.set(account.uuid, account);
@@ -122,7 +93,8 @@ export class AccountManager {
       uuid: a.uuid,
       username: a.username,
       skinUrl: a.skinUrl,
-      cacheId: a.cacheId,
+      refreshToken: a.refreshToken,
+      lastServer: a.lastServer,
     }));
     await Deno.writeTextFile(
       AccountManager.ACCOUNTS_PATH,

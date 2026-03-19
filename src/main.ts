@@ -5,4 +5,4 @@ const accountManager = new AccountManager();
 await accountManager.load();
 
 const server = new Server(accountManager);
-server.start(8080);
+server.start(Number.parseInt(Deno.env.get("ALTMANAGER_PORT") ?? "14454"));

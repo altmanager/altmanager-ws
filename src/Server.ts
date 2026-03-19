@@ -23,11 +23,7 @@ export class Server {
     socket.send(
       JSON.stringify({
         type: "accountList",
-        accounts: this.accountManager.listAccounts().map((a) => ({
-          uuid: a.uuid,
-          username: a.username,
-          skinUrl: a.skinUrl,
-        })),
+        accounts: this.accountManager.listAccounts().map((a) => a.toJSON()),
       }),
     );
   }
@@ -54,7 +50,7 @@ export class Server {
   }
 
   private async addAccount(socket: WebSocket): Promise<void> {
-    await this.accountManager.addAccount((verificationUri, userCode) => {
+    await this.accountManager.addAccount(({ verificationUri, userCode }) => {
       socket.send(
         JSON.stringify({ type: "beginAuth", verificationUri, userCode }),
       );

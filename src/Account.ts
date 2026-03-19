@@ -9,10 +9,19 @@ export class Account extends OfflineAccount {
     uuid: string,
     username: string,
     skinUrl: string,
-    cacheId: string,
+    refreshToken: string,
     session: Session,
+    lastServer: string | null,
   ) {
-    super(uuid, username, skinUrl, cacheId);
+    super(uuid, username, skinUrl, refreshToken, lastServer);
     this.player = new Player(session);
+  }
+
+  public override toJSON(): Record<string, unknown> {
+    const data = super.toJSON();
+
+    data.status = this.player.status;
+
+    return data;
   }
 }
