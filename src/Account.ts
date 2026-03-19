@@ -17,6 +17,20 @@ export class Account extends OfflineAccount {
     this.player = new Player(session);
   }
 
+  public async connect(address: string): Promise<void> {
+    try {
+      await this.player.connect(address);
+      this._lastServer = address;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  public async disconnect(): Promise<void> {
+    await this.player.disconnect();
+    this._lastServer = null;
+  }
+
   public override toJSON(): Record<string, unknown> {
     const data = super.toJSON();
 

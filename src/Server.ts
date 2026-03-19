@@ -1,4 +1,5 @@
 import { AccountManager } from "./AccountManager.ts";
+import { Account } from "./Account.ts";
 
 export class Server {
   private readonly accountManager: AccountManager;
@@ -41,6 +42,38 @@ export class Server {
           await this.addAccount(socket);
           break;
         }
+        case "connect": {
+          const account = this.accountManager.getAccount(message.account);
+          if (account === null) {
+            break;
+          }
+
+          const onlineAccount = account instanceof Account
+            ? account
+            : await this.accountManager.login(account);
+
+          if (onlineAccount.lastServer !== null) {
+            await onlineAccount.disconnect();
+          }
+
+          await onlineAccount.connect(message.server);
+          this.sendAccounts(socket);
+          break;
+        }
+        case "disconnect": {
+          const account = this.accountManager.getAccount(message.account);
+          if (account === null) {
+            break;
+          }
+
+          if (!(account instanceof Account) || account.lastServer === null) {
+            break;
+          }
+
+          await account.disconnect();
+          this.sendAccounts(socket);
+          break;
+        }
       }
     });
   }
@@ -50,12 +83,16 @@ export class Server {
   }
 
   private async addAccount(socket: WebSocket): Promise<void> {
-    await this.accountManager.addAccount(({ verificationUri, userCode }) => {
-      socket.send(
-        JSON.stringify({ type: "beginAuth", verificationUri, userCode }),
-      );
-    });
+    try {
+      await this.accountManager.addAccount(({ verificationUri, userCode }) => {
+        socket.send(
+          JSON.stringify({ type: "beginAuth", verificationUri, userCode }),
+        );
+      });
 
-    this.sendAccounts(socket);
+      this.sendAccounts(socket);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
