@@ -23,7 +23,7 @@ export class Server {
   private sendAccounts(socket: WebSocket): void {
     socket.send(
       JSON.stringify({
-        type: "accountList",
+        type: "accounts:list",
         accounts: this.accountManager.listAccounts().map((a) => a.toJSON()),
       }),
     );
@@ -38,11 +38,27 @@ export class Server {
       const message = JSON.parse(event.data);
 
       switch (message.type) {
-        case "addAccount": {
+        case "accounts:add": {
           await this.addAccount(socket);
           break;
         }
-        case "connect": {
+        case "accounts:list": {
+          this.sendAccounts(socket);
+          break;
+        }
+        case "accounts:get": {
+          socket.send(
+            JSON.stringify({
+              type: "accounts:one",
+              account:
+                this.accountManager.getAccount(message.account)?.toJSON() ??
+                  null,
+              request: message.account,
+            }),
+          );
+          break;
+        }
+        case "player:connect": {
           const account = this.accountManager.getAccount(message.account);
           if (account === null) {
             break;
@@ -60,7 +76,7 @@ export class Server {
           this.sendAccounts(socket);
           break;
         }
-        case "disconnect": {
+        case "player:disconnect": {
           const account = this.accountManager.getAccount(message.account);
           if (account === null) {
             break;
@@ -79,14 +95,13 @@ export class Server {
   }
 
   private onConnect(socket: WebSocket): void {
-    this.sendAccounts(socket);
   }
 
   private async addAccount(socket: WebSocket): Promise<void> {
     try {
       await this.accountManager.addAccount(({ verificationUri, userCode }) => {
         socket.send(
-          JSON.stringify({ type: "beginAuth", verificationUri, userCode }),
+          JSON.stringify({ type: "accounts:auth", verificationUri, userCode }),
         );
       });
 
