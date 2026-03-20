@@ -1,13 +1,13 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@altmanager/lib@0.1": "0.1.0",
+    "jsr:@altmanager/lib@~0.1.1": "0.1.1",
     "npm:mineflayer@4.35.0": "4.35.0_minecraft-data@3.105.0_prismarine-registry@1.11.0",
     "npm:prismarine-auth@^2.7.0": "2.7.0"
   },
   "jsr": {
-    "@altmanager/lib@0.1.0": {
-      "integrity": "4001e347e43e9992e7b4dfb597a73c87c3d202e8107ed6956e38dc41fb67566e",
+    "@altmanager/lib@0.1.1": {
+      "integrity": "a4163a661de213be13c769e1226275d6f66d45901a6e62040dfb4e3f9dcf5f3d",
       "dependencies": [
         "npm:mineflayer"
       ]
@@ -569,7 +569,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@altmanager/lib@0.1",
+      "jsr:@altmanager/lib@~0.1.1",
       "npm:prismarine-auth@^2.7.0"
     ]
   }
