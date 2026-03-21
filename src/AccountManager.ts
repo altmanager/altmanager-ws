@@ -3,7 +3,7 @@ import { OfflineAccount } from "./OfflineAccount.ts";
 import type { DeviceCodeInfo } from "./Auth.ts";
 import { Auth } from "./Auth.ts";
 
-export class AccountManager {
+export class AccountManager extends EventTarget {
   private static readonly ACCOUNTS_PATH = ".data/accounts.json";
 
   readonly #accounts = new Map<string, OfflineAccount>();
@@ -57,7 +57,7 @@ export class AccountManager {
       null,
     );
 
-    this.#accounts.set(account.uuid, account);
+    this.addOnlineAccount(account);
     await this.persist();
     return account;
   }
@@ -79,7 +79,7 @@ export class AccountManager {
         offlineAccount.lastServer,
       );
 
-      this.#accounts.set(account.uuid, account);
+      this.addOnlineAccount(account);
       return account;
     } catch {
       this.#accounts.delete(offlineAccount.uuid);
@@ -100,5 +100,9 @@ export class AccountManager {
       AccountManager.ACCOUNTS_PATH,
       JSON.stringify(data, null, 2),
     );
+  }
+
+  private addOnlineAccount(account: Account): void {
+    this.#accounts.set(account.uuid, account);
   }
 }
