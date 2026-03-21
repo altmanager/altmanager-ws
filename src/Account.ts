@@ -26,8 +26,8 @@ export class Account extends OfflineAccount {
     }
   }
 
-  public async disconnect(): Promise<void> {
-    await this.player.disconnect();
+  public disconnect(): void {
+    this.player.disconnect();
     this._lastServer = null;
   }
 

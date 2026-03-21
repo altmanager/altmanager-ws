@@ -54,7 +54,7 @@ export class AccountManager {
       result.skinUrl,
       result.refreshToken,
       result.session,
-      null
+      null,
     );
 
     this.#accounts.set(account.uuid, account);
@@ -76,7 +76,7 @@ export class AccountManager {
         offlineAccount.skinUrl,
         result.refreshToken,
         result.session,
-        offlineAccount.lastServer
+        offlineAccount.lastServer,
       );
 
       this.#accounts.set(account.uuid, account);

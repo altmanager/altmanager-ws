@@ -1,5 +1,6 @@
 import { AccountManager } from "./AccountManager.ts";
 import { Account } from "./Account.ts";
+import { OfflineAccount } from "./OfflineAccount.ts";
 
 export class Server {
   private readonly accountManager: AccountManager;
@@ -29,6 +30,20 @@ export class Server {
     );
   }
 
+  private sendAccount(
+    socket: WebSocket,
+    account: OfflineAccount | null,
+    requested: string,
+  ): void {
+    socket.send(
+      JSON.stringify({
+        type: "accounts:one",
+        account: account,
+        request: requested,
+      }),
+    );
+  }
+
   private handleConnection(socket: WebSocket): void {
     socket.addEventListener("open", () => {
       this.onConnect(socket);
@@ -47,14 +62,10 @@ export class Server {
           break;
         }
         case "accounts:get": {
-          socket.send(
-            JSON.stringify({
-              type: "accounts:one",
-              account:
-                this.accountManager.getAccount(message.account)?.toJSON() ??
-                  null,
-              request: message.account,
-            }),
+          this.sendAccount(
+            socket,
+            this.accountManager.getAccount(message.account),
+            message.account,
           );
           break;
         }
@@ -69,11 +80,12 @@ export class Server {
             : await this.accountManager.login(account);
 
           if (onlineAccount.lastServer !== null) {
-            await onlineAccount.disconnect();
+            onlineAccount.disconnect();
           }
 
           await onlineAccount.connect(message.server);
           this.sendAccounts(socket);
+          this.sendAccount(socket, account, message.account);
           break;
         }
         case "player:disconnect": {
@@ -86,8 +98,9 @@ export class Server {
             break;
           }
 
-          await account.disconnect();
+          account.disconnect();
           this.sendAccounts(socket);
+          this.sendAccount(socket, account, message.account);
           break;
         }
       }
