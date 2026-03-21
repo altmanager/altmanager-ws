@@ -25,6 +25,7 @@ export class AccountManager extends EventTarget {
         skinUrl: string;
         refreshToken: string;
         lastServer: string | null;
+        autoReconnect?: boolean;
       }> = JSON.parse(text);
       for (const entry of raw) {
         this.#accounts.set(
@@ -35,6 +36,7 @@ export class AccountManager extends EventTarget {
             entry.skinUrl,
             entry.refreshToken,
             entry.lastServer ?? null,
+            entry.autoReconnect ?? true,
           ),
         );
       }
@@ -55,6 +57,7 @@ export class AccountManager extends EventTarget {
       result.refreshToken,
       result.session,
       null,
+      true,
     );
 
     this.addOnlineAccount(account);
@@ -77,6 +80,7 @@ export class AccountManager extends EventTarget {
         result.refreshToken,
         result.session,
         offlineAccount.lastServer,
+        offlineAccount.autoReconnect,
       );
 
       this.addOnlineAccount(account);

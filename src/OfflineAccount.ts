@@ -5,6 +5,8 @@ export class OfflineAccount {
   public readonly username: string;
   public readonly skinUrl: string;
   public readonly refreshToken: string;
+  public autoReconnect: boolean;
+
   protected _lastServer: string | null;
 
   public constructor(
@@ -13,12 +15,14 @@ export class OfflineAccount {
     skinUrl: string,
     refreshToken: string,
     lastServer: string | null,
+    autoReconnect: boolean,
   ) {
     this.uuid = uuid;
     this.username = username;
     this.skinUrl = skinUrl;
     this.refreshToken = refreshToken;
     this._lastServer = lastServer;
+    this.autoReconnect = autoReconnect;
   }
 
   public get lastServer(): string | null {
@@ -32,6 +36,7 @@ export class OfflineAccount {
       skinUrl: this.skinUrl,
       status: PlayerStatus.DISCONNECTED,
       lastServer: this.lastServer,
+      autoReconnect: this.autoReconnect,
     };
   }
 }
