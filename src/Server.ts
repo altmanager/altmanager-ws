@@ -56,12 +56,12 @@ export class Server {
             message: e.detail,
           }),
         );
-      }, {signal: abortController.signal});
+      }, { signal: abortController.signal });
 
       account.player.addEventListener("statusChange", () => {
         this.sendAccount(socket, account, account.uuid);
-      }, {signal: abortController.signal});
-    }
+      }, { signal: abortController.signal });
+    };
 
     for (const account of this.accountManager.listAccounts()) {
       if (!(account instanceof Account)) {
