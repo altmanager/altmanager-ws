@@ -1,3 +1,4 @@
+import { dirname } from "@std/path";
 import { Account } from "./Account.ts";
 import { OfflineAccount } from "./OfflineAccount.ts";
 import type { DeviceCodeInfo } from "./Auth.ts";
@@ -100,6 +101,9 @@ export class AccountManager extends EventTarget {
       refreshToken: a.refreshToken,
       lastServer: a.lastServer,
     }));
+    await Deno.mkdir(dirname(AccountManager.ACCOUNTS_PATH), {
+      recursive: true,
+    });
     await Deno.writeTextFile(
       AccountManager.ACCOUNTS_PATH,
       JSON.stringify(data, null, 2),
