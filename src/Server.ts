@@ -132,6 +132,14 @@ export class Server {
           account.disconnect();
           break;
         }
+        case "player:chat": {
+          const account = this.accountManager.getAccount(message.account);
+          if (account === null || !(account instanceof Account)) {
+            break;
+          }
+          account.player.chat(message.message);
+          break;
+        }
       }
     });
   }
