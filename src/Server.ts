@@ -45,8 +45,41 @@ export class Server {
   }
 
   private handleConnection(socket: WebSocket): void {
+    const abortController = new AbortController();
+
+    const subscribe = (account: Account) => {
+      account.player.addEventListener("chat", (e) => {
+        socket.send(
+          JSON.stringify({
+            type: "player:chat",
+            account: account.uuid,
+            message: e.detail,
+          }),
+        );
+      }, {signal: abortController.signal});
+
+      account.player.addEventListener("statusChange", () => {
+        this.sendAccount(socket, account, account.uuid);
+      }, {signal: abortController.signal});
+    }
+
+    for (const account of this.accountManager.listAccounts()) {
+      if (!(account instanceof Account)) {
+        continue;
+      }
+      subscribe(account);
+    }
+
+    this.accountManager.addEventListener("onlineAccount", (e) => {
+      subscribe(e.detail);
+    });
+
     socket.addEventListener("open", () => {
       this.onConnect(socket);
+    });
+
+    socket.addEventListener("close", () => {
+      abortController.abort();
     });
 
     socket.addEventListener("message", async (event) => {
@@ -84,8 +117,6 @@ export class Server {
           }
 
           await onlineAccount.connect(message.server);
-          this.sendAccounts(socket);
-          this.sendAccount(socket, account, message.account);
           break;
         }
         case "player:disconnect": {
@@ -99,8 +130,6 @@ export class Server {
           }
 
           account.disconnect();
-          this.sendAccounts(socket);
-          this.sendAccount(socket, account, message.account);
           break;
         }
       }
