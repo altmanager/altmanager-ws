@@ -3,8 +3,11 @@ import { Account } from "./Account.ts";
 import { OfflineAccount } from "./OfflineAccount.ts";
 import type { DeviceCodeInfo } from "./Auth.ts";
 import { Auth } from "./Auth.ts";
+import { TypedEventTarget } from "./TypedEventTarget.ts";
 
-export class AccountManager extends EventTarget {
+export class AccountManager extends TypedEventTarget<{
+  onlineAccount: Account;
+}> {
   private static readonly ACCOUNTS_PATH = ".data/accounts.json";
 
   readonly #accounts = new Map<string, OfflineAccount>();
@@ -111,6 +114,7 @@ export class AccountManager extends EventTarget {
   }
 
   private addOnlineAccount(account: Account): void {
+    this.dispatchEvent("onlineAccount", account);
     this.#accounts.set(account.uuid, account);
   }
 }
