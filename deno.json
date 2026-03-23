@@ -1,14 +1,25 @@
 {
   "version": "0.0.0-snapshot",
   "license": "GPL-3.0-only",
+  "permissions": {
+    "server": {
+      "net": true,
+      "read": true,
+      "write": true,
+      "env": true,
+      "sys": true
+    }
+  },
   "tasks": {
-    "start": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys src/main.ts"
+    "start": "deno run -P=server src/main.ts",
+    "compile:linux:arm64": "deno compile -P=server --target aarch64-unknown-linux-gnu --output bin/altmanager-ws-aarch64-unknown-linux-gnu src/main.ts",
+    "compile:linux:x86_64": "deno compile -P=server --target x86_64-unknown-linux-gnu --output bin/altmanager-ws-x86_64-unknown-linux-gnu src/main.ts",
+    "compile:macos:arm64": "deno compile -P=server --target aarch64-apple-darwin --output bin/altmanager-ws-aarch64-apple-darwin src/main.ts",
+    "compile:macos:x86_64": "deno compile -P=server --target x86_64-apple-darwin --output bin/altmanager-ws-x86_64-apple-darwin src/main.ts",
+    "compile:windows:x86_64": "deno compile -P=server --target x86_64-pc-windows-msvc --output bin/altmanager-ws-x86_64-pc-windows-msvc.exe src/main.ts"
   },
   "compilerOptions": {
-    "strict": true,
-    "lib": [
-      "deno.window"
-    ]
+    "strict": true
   },
   "imports": {
     "@altmanager/lib": "jsr:@altmanager/lib@^0.4.0",
