@@ -12,7 +12,6 @@
   },
   "imports": {
     "@altmanager/lib": "jsr:@altmanager/lib@^0.4.0",
-    "@std/path": "jsr:@std/path@^1.1.4",
-    "prismarine-auth": "npm:prismarine-auth@^2.7.0"
+    "@std/path": "jsr:@std/path@^1.1.4"
   }
 }
