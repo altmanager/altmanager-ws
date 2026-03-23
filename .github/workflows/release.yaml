@@ -63,8 +63,8 @@ jobs:
         with:
           gh-token: ${{ github.token }}
           files: |-
-            bin/altmanager-ws-linux-arm64; type=application/x-pie-executable
-            bin/altmanager-ws-linux-x86_64; type=application/x-pie-executable
-            bin/altmanager-ws-macos-arm64; type=application/x-mach-binary
-            bin/altmanager-ws-macos-x86_64; type=application/x-mach-binary
-            bin/altmanager-ws-windows-x86_64.exe; type=application/vnd.microsoft.portable-executable
+            bin/altmanager-ws-aarch64-unknown-linux-gnu; type=application/x-pie-executable
+            bin/altmanager-ws-x86_64-unknown-linux-gnu; type=application/x-pie-executable
+            bin/altmanager-ws-aarch64-apple-darwin; type=application/x-mach-binary
+            bin/altmanager-ws-x86_64-apple-darwin; type=application/x-mach-binary
+            bin/altmanager-ws-x86_64-pc-windows-msvc.exe; type=application/vnd.microsoft.portable-executable

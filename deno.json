@@ -12,11 +12,11 @@
   },
   "tasks": {
     "start": "deno run -P=server src/main.ts",
-    "compile:linux:arm64": "deno compile -P=server --target aarch64-unknown-linux-gnu --output bin/altmanager-ws-linux-arm64 src/main.ts",
-    "compile:linux:x86_64": "deno compile -P=server --target x86_64-unknown-linux-gnu --output bin/altmanager-ws-linux-x86_64 src/main.ts",
-    "compile:macos:arm64": "deno compile -P=server --target aarch64-apple-darwin --output bin/altmanager-ws-macos-arm64 src/main.ts",
-    "compile:macos:x86_64": "deno compile -P=server --target x86_64-apple-darwin --output bin/altmanager-ws-macos-x86_64 src/main.ts",
-    "compile:windows:x86_64": "deno compile -P=server --target x86_64-pc-windows-msvc --output bin/altmanager-ws-windows-x86_64.exe src/main.ts"
+    "compile:linux:arm64": "deno compile -P=server --target aarch64-unknown-linux-gnu --output bin/altmanager-ws-aarch64-unknown-linux-gnu src/main.ts",
+    "compile:linux:x86_64": "deno compile -P=server --target x86_64-unknown-linux-gnu --output bin/altmanager-ws-x86_64-unknown-linux-gnu src/main.ts",
+    "compile:macos:arm64": "deno compile -P=server --target aarch64-apple-darwin --output bin/altmanager-ws-aarch64-apple-darwin src/main.ts",
+    "compile:macos:x86_64": "deno compile -P=server --target x86_64-apple-darwin --output bin/altmanager-ws-x86_64-apple-darwin src/main.ts",
+    "compile:windows:x86_64": "deno compile -P=server --target x86_64-pc-windows-msvc --output bin/altmanager-ws-x86_64-pc-windows-msvc.exe src/main.ts"
   },
   "compilerOptions": {
     "strict": true
