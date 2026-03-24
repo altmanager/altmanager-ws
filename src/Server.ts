@@ -61,6 +61,14 @@ export class Server {
       account.player.addEventListener("statusChange", () => {
         this.sendAccount(socket, account, account.uuid);
       }, { signal: abortController.signal });
+
+      account.player.addEventListener("kick", (e) => {
+        socket.send(JSON.stringify({
+          type: "player:kick",
+          account: account.uuid,
+          reason: e.detail,
+        }));
+      }, { signal: abortController.signal });
     };
 
     for (const account of this.accountManager.listAccounts()) {
