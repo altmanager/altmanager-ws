@@ -22,3 +22,6 @@ jobs:
 
       - name: Type check
         run: deno check
+
+      - name: Check formatting
+        run: deno fmt --check
