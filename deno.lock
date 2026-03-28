@@ -1,7 +1,7 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@altmanager/lib@0.6": "0.6.0",
+    "jsr:@altmanager/lib@~0.6.1": "0.6.1",
     "jsr:@atikayda/kjson@^1.2.2": "1.2.2",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.1.4": "1.1.4",
@@ -11,8 +11,8 @@
     "npm:proposal-decimal@20250613.0.0": "20250613.0.0"
   },
   "jsr": {
-    "@altmanager/lib@0.6.0": {
-      "integrity": "eafe474a21f4293006778eff7181b27ecc972f912f88e5152e8dc8066f3b408d",
+    "@altmanager/lib@0.6.1": {
+      "integrity": "d640cff70460c4321130d4accef371782bf66d675afc825ac67ea82f44044c1a",
       "dependencies": [
         "jsr:@atikayda/kjson",
         "npm:@types/aes-js",
@@ -147,7 +147,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@altmanager/lib@0.6",
+      "jsr:@altmanager/lib@~0.6.1",
       "jsr:@std/path@^1.1.4"
     ]
   }
