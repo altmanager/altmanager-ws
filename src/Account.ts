@@ -46,7 +46,11 @@ export class Account extends OfflineAccount {
       this.reconnectAttempts++;
 
       setTimeout(
-        () => this.connect(this.lastServer!).catch(console.error),
+        () => {
+          if (this.player.status === PlayerStatus.DISCONNECTED) {
+            this.connect(this.lastServer!).catch(console.error);
+          }
+        },
         delay,
       );
     });
