@@ -1,0 +1,45 @@
+name-template: v$RESOLVED_VERSION
+tag-template: v$RESOLVED_VERSION
+
+version-resolver:
+  minor:
+    labels:
+      - semver:major # only for v0
+      - semver:minor
+  patch:
+    labels:
+      - semver:patch
+  default: patch
+
+categories:
+  - title: ⚠️ Breaking Changes
+    labels:
+      - semver:major
+  - title: 🚀 Features
+    labels:
+      - feature
+  - title: 🐛 Bug Fixes
+    labels:
+      - fix
+  - title: 📖 Documentation
+    labels:
+      - documentation
+  - title: ⬆️ Dependencies
+    labels:
+      - dependencies
+    collapse-after: 5
+  - title: 🔧 CI / Actions
+    labels:
+      - github_actions
+    collapse-after: 5
+  - title: 📦 Other
+
+change-template: "- $TITLE @$AUTHOR ([#$NUMBER](https://github.com/altmanager/altmanager-ws/pull/$NUMBER))"
+change-title-escapes: \<*_&
+
+template: |
+  ## Changes
+
+  $CHANGES
+
+  **Full Changelog**: [`$PREVIOUS_TAG...v$RESOLVED_VERSION`](https://github.com/altmanager/altmanager-ws/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION)
