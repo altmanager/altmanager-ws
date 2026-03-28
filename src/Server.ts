@@ -69,6 +69,14 @@ export class Server {
           reason: e.detail,
         }));
       }, { signal: abortController.signal });
+
+      account.player.addEventListener("playerListChange", () => {
+        socket.send(JSON.stringify({
+          type: "player:server-players-list",
+          account: account.uuid,
+          players: account.player.onlinePlayers,
+        }));
+      });
     };
 
     for (const account of this.accountManager.listAccounts()) {
