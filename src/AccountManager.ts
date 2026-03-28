@@ -89,10 +89,9 @@ export class AccountManager extends TypedEventTarget<{
 
       this.addOnlineAccount(account);
       return account;
-    } catch {
-      this.#accounts.delete(offlineAccount.uuid);
-      await this.persist();
-      throw new Error("Auth failed, account removed");
+    } catch (e) {
+      console.warn("Failed to refresh token for " + offlineAccount.uuid, e);
+      throw e;
     }
   }
 

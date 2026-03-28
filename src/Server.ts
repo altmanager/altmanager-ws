@@ -104,7 +104,11 @@ export class Server {
 
       switch (message.type) {
         case "accounts:add": {
-          await this.addAccount(socket);
+          try {
+            await this.addAccount(socket);
+          } catch (e) {
+            console.error("Failed to add account", e);
+          }
           break;
         }
         case "accounts:list": {
@@ -127,9 +131,21 @@ export class Server {
 
           const onlineAccount = account instanceof Account
             ? account
-            : await this.accountManager.login(account);
+            : await (this.accountManager.login(account).catch(() =>
+              this.addAccount(socket).catch((e) => {
+                console.log("Failed to re-authenticate", e);
+                return null;
+              })
+            ));
 
-          if (onlineAccount.lastServer !== null || onlineAccount.player.status !== PlayerStatus.DISCONNECTED) {
+          if (onlineAccount === null) {
+            break;
+          }
+
+          if (
+            onlineAccount.lastServer !== null ||
+            onlineAccount.player.status !== PlayerStatus.DISCONNECTED
+          ) {
             try {
               onlineAccount.disconnect();
             } catch {
@@ -168,17 +184,16 @@ export class Server {
   private onConnect(socket: WebSocket): void {
   }
 
-  private async addAccount(socket: WebSocket): Promise<void> {
-    try {
-      await this.accountManager.addAccount(({ verificationUri, userCode }) => {
+  private async addAccount(socket: WebSocket): Promise<Account> {
+    const account = await this.accountManager.addAccount(
+      ({ verificationUri, userCode }) => {
         socket.send(
           JSON.stringify({ type: "accounts:auth", verificationUri, userCode }),
         );
-      });
+      },
+    );
 
-      this.sendAccounts(socket);
-    } catch (e) {
-      console.error(e);
-    }
+    this.sendAccounts(socket);
+    return account;
   }
 }
