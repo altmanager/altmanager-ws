@@ -39,7 +39,7 @@ export class Server {
     socket.send(
       JSON.stringify({
         type: "accounts:one",
-        account: account,
+        account: account?.toJSON(),
         request: requested,
       }),
     );

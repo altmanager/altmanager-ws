@@ -5,6 +5,7 @@ import { OfflineAccount } from "./OfflineAccount.ts";
 export class Account extends OfflineAccount {
   public readonly player: Player;
   private reconnectAttempts = 0;
+  private onlineSince: Date | null = null;
 
   public constructor(
     uuid: string,
@@ -60,6 +61,7 @@ export class Account extends OfflineAccount {
     try {
       await this.player.connect(address);
       this._lastServer = address;
+      this.onlineSince = new Date();
     } catch (e) {
       console.error(e);
     }
@@ -68,6 +70,7 @@ export class Account extends OfflineAccount {
   public disconnect(): void {
     this.player.disconnect();
     this._lastServer = null;
+    this.onlineSince = null;
     this.reconnectAttempts = 0;
   }
 
@@ -75,6 +78,7 @@ export class Account extends OfflineAccount {
     const data = super.toJSON();
 
     data.status = this.player.status;
+    data.onlineSince = this.onlineSince?.toISOString();
 
     return data;
   }
