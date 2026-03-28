@@ -116,11 +116,20 @@ export class Server {
           break;
         }
         case "accounts:get": {
+          const account = this.accountManager.getAccount(message.account);
           this.sendAccount(
             socket,
-            this.accountManager.getAccount(message.account),
+            account,
             message.account,
           );
+
+          if (account !== null && account instanceof Account) {
+            socket.send(JSON.stringify({
+              type: "player:server-players-list",
+              account: account.uuid,
+              players: account.player.onlinePlayers,
+            }));
+          }
           break;
         }
         case "player:connect": {
