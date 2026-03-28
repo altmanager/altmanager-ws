@@ -1,6 +1,7 @@
 import { AccountManager } from "./AccountManager.ts";
 import { Account } from "./Account.ts";
 import { OfflineAccount } from "./OfflineAccount.ts";
+import { PlayerStatus } from "@altmanager/lib";
 
 export class Server {
   private readonly accountManager: AccountManager;
@@ -128,8 +129,12 @@ export class Server {
             ? account
             : await this.accountManager.login(account);
 
-          if (onlineAccount.lastServer !== null) {
-            onlineAccount.disconnect();
+          if (onlineAccount.lastServer !== null || onlineAccount.player.status !== PlayerStatus.DISCONNECTED) {
+            try {
+              onlineAccount.disconnect();
+            } catch {
+              // player might not have been connected
+            }
           }
 
           await onlineAccount.connect(message.server);
