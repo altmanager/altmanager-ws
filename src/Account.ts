@@ -26,6 +26,11 @@ export class Account extends OfflineAccount {
           }
           this.reconnectAttempts = 0;
         }, 60_000);
+
+        if (this.player.health <= 0) {
+          this.player.respawn().then();
+        }
+
         return;
       }
 

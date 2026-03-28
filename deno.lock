@@ -1,20 +1,29 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@altmanager/lib@0.5": "0.5.0",
+    "jsr:@altmanager/lib@0.6": "0.6.0",
+    "jsr:@atikayda/kjson@^1.2.2": "1.2.2",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.1.4": "1.1.4",
     "npm:@types/aes-js@^3.1.4": "3.1.4",
     "npm:aes-js@^3.1.2": "3.1.2",
-    "npm:prismarine-nbt@^2.8.0": "2.8.0"
+    "npm:prismarine-nbt@^2.8.0": "2.8.0",
+    "npm:proposal-decimal@20250613.0.0": "20250613.0.0"
   },
   "jsr": {
-    "@altmanager/lib@0.5.0": {
-      "integrity": "a2b537bc4cabb724c90f1719ce5fa1a3fb694ed164594113a2cd91ad45b442e7",
+    "@altmanager/lib@0.6.0": {
+      "integrity": "eafe474a21f4293006778eff7181b27ecc972f912f88e5152e8dc8066f3b408d",
       "dependencies": [
+        "jsr:@atikayda/kjson",
         "npm:@types/aes-js",
         "npm:aes-js",
         "npm:prismarine-nbt"
+      ]
+    },
+    "@atikayda/kjson@1.2.2": {
+      "integrity": "d291dd37f3359be9d743d9f30560a94e8266b4d87183c46274df36e072a75ed2",
+      "dependencies": [
+        "npm:proposal-decimal"
       ]
     },
     "@std/internal@1.0.12": {
@@ -89,6 +98,9 @@
     "process@0.11.10": {
       "integrity": "sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A=="
     },
+    "proposal-decimal@20250613.0.0": {
+      "integrity": "sha512-cLO4I9fFHl4khF7x8F3/MUJzO/2eXvRVALzcHzNzc2pJKdNFcpk4EWW+W29V0qBQulZ6IkO58oMPU8BrsZIjag=="
+    },
     "protodef-validator@1.4.0": {
       "integrity": "sha512-2y2coBolqCEuk5Kc3QwO7ThR+/7TZiOit4FrpAgl+vFMvq8w76nDhh09z08e2NQOdrgPLsN2yzXsvRvtADgUZQ==",
       "dependencies": [
@@ -135,7 +147,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@altmanager/lib@0.5",
+      "jsr:@altmanager/lib@0.6",
       "jsr:@std/path@^1.1.4"
     ]
   }
