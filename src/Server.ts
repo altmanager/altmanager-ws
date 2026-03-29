@@ -142,7 +142,7 @@ export class Server {
             ? account
             : await (this.accountManager.login(account).catch(() =>
               this.addAccount(socket).catch((e) => {
-                console.log("Failed to re-authenticate", e);
+                console.error("Failed to re-authenticate", e);
                 return null;
               })
             ));
@@ -184,6 +184,23 @@ export class Server {
             break;
           }
           account.player.chat(message.message);
+          break;
+        }
+        case "player:chat-history": {
+          const account = this.accountManager.getAccount(message.account);
+          if (account === null || !(account instanceof Account)) {
+            socket.send(JSON.stringify({
+              type: "player:chat-history",
+              account: message.account,
+              history: [],
+            }));
+            break;
+          }
+          socket.send(JSON.stringify({
+            type: "player:chat-history",
+            account: message.account,
+            history: account.chatHistory.getAll(),
+          }));
           break;
         }
       }

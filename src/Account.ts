@@ -1,11 +1,15 @@
 import type { Session } from "@altmanager/lib";
 import { Player, PlayerStatus } from "@altmanager/lib";
 import { OfflineAccount } from "./OfflineAccount.ts";
+import { CircularBuffer } from "./CircularBuffer.ts";
 
 export class Account extends OfflineAccount {
   public readonly player: Player;
   private reconnectAttempts = 0;
   private onlineSince: Date | null = null;
+  public readonly chatHistory = new CircularBuffer<
+    { time: number; message: unknown }
+  >(100);
 
   public constructor(
     uuid: string,
@@ -54,6 +58,10 @@ export class Account extends OfflineAccount {
         },
         delay,
       );
+    });
+
+    this.player.addEventListener("chat", (e) => {
+      this.chatHistory.add({ time: Date.now(), message: e.detail });
     });
   }
 
