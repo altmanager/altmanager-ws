@@ -79,6 +79,7 @@ export class Account extends OfflineAccount {
 
     data.status = this.player.status;
     data.onlineSince = this.onlineSince?.toISOString();
+    data.health = this.player.health;
 
     return data;
   }
