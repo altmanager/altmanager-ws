@@ -9,7 +9,7 @@ export class Account extends OfflineAccount {
   private onlineSince: Date | null = null;
   public readonly chatHistory = new CircularBuffer<
     { time: number; message: unknown }
-  >(100);
+  >(500);
 
   public constructor(
     uuid: string,
