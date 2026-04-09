@@ -82,18 +82,16 @@ export class CircularBuffer<T> implements Iterable<T> {
     );
   }
 
-  public [Symbol.iterator](): Iterator<T> {
-    let idx = 0;
-    return {
-      next: (): IteratorResult<T> => {
-        if (idx >= this.count) {
-          return { done: true, value: undefined };
-        }
-        const value = this.buffer[this.mapIndex(idx)]!;
-        idx++;
-        return { done: false, value };
-      },
-    };
+  public *iterator(reverse = false): Generator<T> {
+    const step = reverse ? -1 : 1;
+    const start = reverse ? this.count - 1 : 0;
+    for (let idx = start; reverse ? idx >= 0 : idx < this.count; idx += step) {
+      yield this.buffer[this.mapIndex(idx)]!;
+    }
+  }
+
+  public *[Symbol.iterator](): Generator<T> {
+    yield* this.iterator();
   }
 
   private mapIndex(index: number): number {
