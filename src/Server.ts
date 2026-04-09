@@ -196,10 +196,21 @@ export class Server {
             }));
             break;
           }
+
+          const limit = message.limit ?? 50;
+          const before = message.before ?? Infinity;
+          const boundary = account.chatHistory.findLastIndex((e) =>
+            e.time < before
+          ) + 1;
+          const history = account.chatHistory.slice(
+            Math.max(0, boundary - limit),
+            boundary,
+          );
+
           socket.send(JSON.stringify({
             type: "player:chat-history",
             account: message.account,
-            history: account.chatHistory.getAll(),
+            history: history,
           }));
           break;
         }
