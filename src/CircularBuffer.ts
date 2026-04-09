@@ -82,6 +82,24 @@ export class CircularBuffer<T> implements Iterable<T> {
     );
   }
 
+  public findIndex(predicate: (item: T) => boolean): number {
+    for (let idx = 0; idx < this.count; idx++) {
+      if (predicate(this.buffer[this.mapIndex(idx)]!)) {
+        return idx;
+      }
+    }
+    return -1;
+  }
+
+  public findLastIndex(predicate: (item: T) => boolean): number {
+    for (let idx = this.count - 1; idx >= 0; idx--) {
+      if (predicate(this.buffer[this.mapIndex(idx)]!)) {
+        return idx;
+      }
+    }
+    return -1;
+  }
+
   public *iterator(reverse = false): Generator<T> {
     const step = reverse ? -1 : 1;
     const start = reverse ? this.count - 1 : 0;
