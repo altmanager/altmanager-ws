@@ -46,7 +46,40 @@ export class CircularBuffer<T> implements Iterable<T> {
   }
 
   public getAll(): T[] {
-    return Array.from(this);
+    return this.slice(0);
+  }
+
+  public slice(start: number, end: number = this.count): T[] {
+    if (this.count === 0) {
+      return [];
+    }
+
+    if (start < 0) {
+      start = Math.max(0, start + this.count);
+    } else {
+      start = Math.min(start, this.count);
+    }
+
+    if (end < 0) {
+      end = Math.max(0, end + this.count);
+    } else {
+      end = Math.min(end, this.count);
+    }
+
+    if (end <= start) {
+      return [];
+    }
+
+    const physStart = (this.start + start) % this.capacity;
+    const physEnd = (this.start + end) % this.capacity;
+
+    if (physEnd > physStart) {
+      return this.buffer.slice(physStart, physEnd) as T[];
+    }
+
+    return (this.buffer.slice(physStart, this.capacity) as T[]).concat(
+      this.buffer.slice(0, physEnd) as T[],
+    );
   }
 
   public [Symbol.iterator](): Iterator<T> {
