@@ -46,21 +46,70 @@ export class CircularBuffer<T> implements Iterable<T> {
   }
 
   public getAll(): T[] {
-    return Array.from(this);
+    return this.slice(0);
   }
 
-  public [Symbol.iterator](): Iterator<T> {
-    let idx = 0;
-    return {
-      next: (): IteratorResult<T> => {
-        if (idx >= this.count) {
-          return { done: true, value: undefined };
-        }
-        const value = this.buffer[this.mapIndex(idx)]!;
-        idx++;
-        return { done: false, value };
-      },
-    };
+  public slice(start: number, end: number = this.count): T[] {
+    if (this.count === 0) {
+      return [];
+    }
+
+    if (start < 0) {
+      start = Math.max(0, start + this.count);
+    } else {
+      start = Math.min(start, this.count);
+    }
+
+    if (end < 0) {
+      end = Math.max(0, end + this.count);
+    } else {
+      end = Math.min(end, this.count);
+    }
+
+    if (end <= start) {
+      return [];
+    }
+
+    const physStart = (this.start + start) % this.capacity;
+    const physEnd = (this.start + end) % this.capacity;
+
+    if (physEnd > physStart) {
+      return this.buffer.slice(physStart, physEnd) as T[];
+    }
+
+    return (this.buffer.slice(physStart, this.capacity) as T[]).concat(
+      this.buffer.slice(0, physEnd) as T[],
+    );
+  }
+
+  public findIndex(predicate: (item: T) => boolean): number {
+    for (let idx = 0; idx < this.count; idx++) {
+      if (predicate(this.buffer[this.mapIndex(idx)]!)) {
+        return idx;
+      }
+    }
+    return -1;
+  }
+
+  public findLastIndex(predicate: (item: T) => boolean): number {
+    for (let idx = this.count - 1; idx >= 0; idx--) {
+      if (predicate(this.buffer[this.mapIndex(idx)]!)) {
+        return idx;
+      }
+    }
+    return -1;
+  }
+
+  public *iterator(reverse = false): Generator<T> {
+    const step = reverse ? -1 : 1;
+    const start = reverse ? this.count - 1 : 0;
+    for (let idx = start; reverse ? idx >= 0 : idx < this.count; idx += step) {
+      yield this.buffer[this.mapIndex(idx)]!;
+    }
+  }
+
+  public *[Symbol.iterator](): Generator<T> {
+    yield* this.iterator();
   }
 
   private mapIndex(index: number): number {
